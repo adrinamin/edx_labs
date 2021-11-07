@@ -7,21 +7,21 @@ using namespace std;
 
 int main()
 {
-    int n, helper;
-    string line = "";
-    cin >> n;
-    vector<int> v(n);
-    while(cin >> helper, line.length() != 0){
-        cin >> helper;
-        v.push_back(helper);
-        getline(cin, line);
+    /* Enter your code here. Read input from STDIN. Print output to STDOUT */   
+    int len;
+    vector<int> v;
+    cin >> len;
+    for (int i = 0; i<len; i++) {
+        int var;
+        cin >> var;
+        v.push_back(var);
     }
     
-    sort(v.begin(), v.end());
+    sort(v.begin(),v.end()); 
     
-    for (const int& j : v) {
-        cout << j << " ";
+    for (int i = 0; i<len; i++) {
+        cout << v[i];
     }
-
+    
     return 0;
 }
