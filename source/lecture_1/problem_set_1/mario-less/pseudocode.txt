@@ -1,0 +1,9 @@
+Enter height
+if height is between 1 and 8
+    print 1 to 8 rows of hashes with each row having one more hash
+else if height is smaller than 1
+    reprompt the user input
+else if height is greater than 8
+    reprompt the user input
+else
+    quit the game
