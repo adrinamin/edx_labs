@@ -1,5 +1,5 @@
-
 vscode:
   extensions:
     - llvm-vs-code-extensions.vscode-clangd
     - franneck94.c-cpp-runner
+    - vadimcn.vscode-lldb
