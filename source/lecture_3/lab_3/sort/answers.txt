@@ -1,0 +1,17 @@
+sort1 uses: Selection Sort
+
+How do you know?: 
+- slowest overall
+- increase in time to solve the problem is strongest
+- exponential increase
+
+sort2 uses: Merge Sort
+
+How do you know?:
+- fastest overall
+- increase in time to solve the problem is very low (n log(n))
+
+sort3 uses: Bubble Sort
+
+How do you know?:
+- time difference between sorted5000 and sorted10000 is roughly doubling -> omega(n)
