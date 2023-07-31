@@ -43,16 +43,21 @@ int main(void)
     swap(&a, &b);
     printf("a->%d, b->%d\n", a, b);
 
+    // display the pointer
+    int n = 50;
+    int *p = &n; // p is a pointer to an int
+    printf("The address of n is %p.\n", &n);
+
     return 0;
 }
 
 /*
-is in a separate function frame
-that's why it doesn't change the value of nb if we just pass nb
-it is just changing a copy of the value of nb, not the actual value of nb
-passed by value!! (copy of the value is passed)
-This is why we need pointers!!!
-passing value by reference
+    is in a separate function frame
+    that's why it doesn't change the value of nb if we just pass nb
+    it is just changing a copy of the value of nb, not the actual value of nb
+    passed by value!! (copy of the value is passed)
+    This is why we need pointers!!!
+    passing value by reference
 */
 void change_value(int *nb) // takes a pointer to an int nb
 {
