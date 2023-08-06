@@ -8,27 +8,35 @@ void colorize(int height, int width, RGBTRIPLE image[height][width])
     {
         for (int y = 0; y < height; y++)
         {
+            if (image[x][y].rgbtBlue == 0 && image[x][y].rgbtGreen == 0 && image[x][y].rgbtRed == 0)
+            {
+                image[x][y].rgbtBlue = 255;
+                image[x][y].rgbtGreen = 0;
+                image[x][y].rgbtRed = 0;
+            }
+
             /*
+            Alternative approach
             In C, arrays are passed to functions by reference,
             which means when we access and modify the image array elements inside the function,
             we are directly modifying the original array.
             However, when we assign RGBTRIPLE pixel = image[x][y];,
             we are creating a copy of the pixel,
             and any modifications made to pixel won't be reflected in the image array.
-            We need to change the pixe to a pointer
+            We need to change the pixel to a pointer
             which points to the address of the image array.
             Any modification to the pixel variable will directly affect the corresponding
             pixel in the image array.
             */
-            RGBTRIPLE *pixel = &image[x][y];
+            // RGBTRIPLE *pixel = &image[x][y];
 
-            // make pixels blue if they are black
-            if (pixel->rgbtBlue == 0 && pixel->rgbtGreen == 0 && pixel->rgbtRed == 0)
-            {
-                pixel->rgbtBlue = 255;
-                pixel->rgbtGreen = 0;
-                pixel->rgbtRed = 0;
-            }
+            // // make pixels blue if they are black
+            // if (pixel->rgbtBlue == 0 && pixel->rgbtGreen == 0 && pixel->rgbtRed == 0)
+            // {
+            //     pixel->rgbtBlue = 255;
+            //     pixel->rgbtGreen = 0;
+            //     pixel->rgbtRed = 0;
+            // }
         }
     }
 }
