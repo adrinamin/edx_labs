@@ -3,16 +3,20 @@
 // Convert image to grayscale
 void grayscale(int height, int width, RGBTRIPLE image[height][width])
 {
-    for (int x = 0; x < width; x++)
+    // iterating row by row
+    for (int y = 0; y < height; y++)
     {
-        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
         {
-            // calculate the average of the red, green, and blue values
-            int average = (image[x][y].rgbtBlue + image[x][y].rgbtGreen + image[x][y].rgbtRed) / 3;
-
-            image[x][y].rgbtBlue = average;
-            image[x][y].rgbtGreen = average;
-            image[x][y].rgbtRed = average;
+            RGBTRIPLE *pixel = &image[y][x];
+            
+            // Calculate the average value of the red, green, and blue components
+            int average = (pixel->rgbtBlue + pixel->rgbtGreen + pixel->rgbtRed) / 3;
+            
+            // Set each component to the average value
+            pixel->rgbtBlue = average;
+            pixel->rgbtGreen = average;
+            pixel->rgbtRed = average;
         }
     }
     return;
@@ -21,23 +25,17 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
 // Convert image to sepia
 void sepia(int height, int width, RGBTRIPLE image[height][width])
 {
-    /*
-    sepia formula:
-        sepiaRed = .393 * originalRed + .769 * originalGreen + .189 * originalBlue
-        sepiaGreen = .349 * originalRed + .686 * originalGreen + .168 * originalBlue
-        sepiaBlue = .272 * originalRed + .534 * originalGreen + .131 * originalBlue
-    */
-
     // iterate over each pixel in the image
-    for (int x = 0; x < width; x++)
+    for (int y = 0; y < height; y++)
     {
-        for (int y = 0; y < height; y++)
-
+        for (int x = 0; x < width; x++)
         {
+            RGBTRIPLE *pixel = &image[y][x];
+
             // calculate the sepia values for each color
-            int sepiaRed = .393 * image[x][y].rgbtRed + .769 * image[x][y].rgbtGreen + .189 * image[x][y].rgbtBlue;
-            int sepiaGreen = .349 * image[x][y].rgbtRed + .686 * image[x][y].rgbtGreen + .168 * image[x][y].rgbtBlue;
-            int sepiaBlue = .272 * image[x][y].rgbtRed + .534 * image[x][y].rgbtGreen + .131 * image[x][y].rgbtBlue;
+            int sepiaRed = .393 * pixel->rgbtRed + .769 * pixel->rgbtGreen + .189 * pixel->rgbtBlue;
+            int sepiaGreen = .349 * pixel->rgbtRed + .686 * pixel->rgbtGreen + .168 * pixel->rgbtBlue;
+            int sepiaBlue = .272 * pixel->rgbtRed + .534 * pixel->rgbtGreen + .131 * pixel->rgbtBlue;
 
             // if the sepia value is greater than 255, set it to 255
             if (sepiaRed > 255)
@@ -54,9 +52,9 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
             }
 
             // set the pixel to the sepia values
-            image[x][y].rgbtRed = sepiaRed;
-            image[x][y].rgbtGreen = sepiaGreen;
-            image[x][y].rgbtBlue = sepiaBlue;
+            pixel->rgbtRed = sepiaRed;
+            pixel->rgbtGreen = sepiaGreen;
+            pixel->rgbtBlue = sepiaBlue;
         }
     }
     return;
@@ -66,18 +64,20 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
 void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
     // swap pixels on horizontally opposite sides of the image
-    for (int x = 0; x < width / 2; x++)
+    for (int y = 0; y < height; y++)
     {
-        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width / 2; x++)
         {
-            // store the pixel on the left side of the image
-            RGBTRIPLE temp = image[x][y];
+            // Get a pointer to the pixel on the left side
+            RGBTRIPLE *left_pixel = &image[y][x];
+            
+            // Get a pointer to the pixel on the right side
+            RGBTRIPLE *right_pixel = &image[y][width - 1 - x];
 
-            // set the pixel on the left side of the image to the pixel on the right side of the image
-            image[x][y] = image[width - x - 1][y];
-
-            // set the pixel on the right side of the image to the pixel on the left side of the image
-            image[width - x - 1][y] = temp;
+            // Swap the pixels (RGB values)
+            RGBTRIPLE temp = *left_pixel;
+            *left_pixel = *right_pixel;
+            *right_pixel = temp;
         }
     }
     return;
@@ -86,55 +86,51 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
-    // blur each pixel in the image
-    for (int x = 0; x < width; x++)
+    // Create a copy of the original image
+    RGBTRIPLE copy[height][width];
+    
+    // Iterate over each pixel in the image
+    for (int y = 0; y < height; y++)
     {
-        for (int y = 0; y < height; y++)
-
+        for (int x = 0; x < width; x++)
         {
-            // initialize the sum of the red, green, and blue values
-            int sumRed = 0;
-            int sumGreen = 0;
-            int sumBlue = 0;
+            int totalRed = 0;
+            int totalGreen = 0;
+            int totalBlue = 0;
+            int count = 0;
 
-            // initialize the number of pixels in the average
-            int numPixels = 0;
-
-            // iterate over the 3x3 grid centered on the pixel
-            for (int i = -1; i < 2; i++)
+            // Iterate over a 3x3 grid centered at the current pixel
+            for (int dy = -1; dy <= 1; dy++)
             {
-                // skip the pixel if it is outside the image
-                if (x + i < 0 || x + i > width - 1)
+                for (int dx = -1; dx <= 1; dx++)
                 {
-                    continue;
-                }
-                for (int j = -1; j < 2; j++)
-                {
-                    // skip the pixel if it is outside the image
-                    if (y + j < 0 || y + j > height - 1)
+                    int newY = y + dy;
+                    int newX = x + dx;
+
+                    // Check if the new coordinates are within bounds
+                    if (newY >= 0 && newY < height && newX >= 0 && newX < width)
                     {
-                        continue;
+                        totalRed += image[newY][newX].rgbtRed;
+                        totalGreen += image[newY][newX].rgbtGreen;
+                        totalBlue += image[newY][newX].rgbtBlue;
+                        count++;
                     }
-
-                    // add the red, green, and blue values to the sum
-                    sumRed += image[x + i][y + j].rgbtRed;
-                    sumGreen += image[x + i][y + j].rgbtGreen;
-                    sumBlue += image[x + i][y + j].rgbtBlue;
-
-                    // increment the number of pixels in the average
-                    numPixels++;
                 }
             }
 
-            // calculate the average of the red, green, and blue values
-            int averageRed = sumRed / numPixels;
-            int averageGreen = sumGreen / numPixels;
-            int averageBlue = sumBlue / numPixels;
+            // Calculate the average color
+            copy[y][x].rgbtRed = totalRed / count;
+            copy[y][x].rgbtGreen = totalGreen / count;
+            copy[y][x].rgbtBlue = totalBlue / count;
+        }
+    }
 
-            // set the pixel to the average values
-            image[x][y].rgbtRed = averageRed;
-            image[x][y].rgbtGreen = averageGreen;
-            image[x][y].rgbtBlue = averageBlue;
+    // Copy the blurred image back to the original image
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            image[y][x] = copy[y][x];
         }
     }
     return;
