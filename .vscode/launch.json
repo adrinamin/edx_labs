@@ -16,8 +16,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/workspace/edx_labs/source/lecture_5",
-      "program": "/workspace/edx_labs/source/lecture_5/build/Debug/outDebug",
+      "cwd": "/workspace/edx_labs/source",
+      "program": "/workspace/edx_labs/source/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
